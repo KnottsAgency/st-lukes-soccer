@@ -25,7 +25,8 @@ alter table public.sponsorship_submissions enable row level security;
 revoke all on public.sponsor_admins from anon, authenticated;
 revoke all on public.sponsorship_submissions from anon, authenticated;
 grant select on public.sponsor_admins to authenticated;
-grant select, update on public.sponsorship_submissions to authenticated;
+grant select on public.sponsorship_submissions to authenticated;
+grant update (status, paid_at) on public.sponsorship_submissions to authenticated;
 drop policy if exists "Read own staff membership" on public.sponsor_admins;
 create policy "Read own staff membership" on public.sponsor_admins for select to authenticated
 using ((select auth.uid()) = user_id);
