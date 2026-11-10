@@ -10,6 +10,7 @@ export function SponsorApplication({enabled,siteKey}:{enabled:boolean;siteKey:st
   const [customAmount,setCustomAmount]=useState("");
   const [busy,setBusy]=useState(false);
   const [success,setSuccess]=useState(false);
+  const [notificationSent,setNotificationSent]=useState(false);
   const [error,setError]=useState("");
   const chosen=sponsorshipOptions.find(x=>x.value===type);
   const amount=type==="donation"?Number(customAmount||0):chosen?.price||0;
@@ -24,13 +25,14 @@ export function SponsorApplication({enabled,siteKey}:{enabled:boolean;siteKey:st
       const response=await fetch("/api/sponsors/apply",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
       const result=await response.json();
       if(!response.ok) throw new Error(result.error||"Submission could not be completed.");
+      setNotificationSent(result.notificationSent===true);
       setSuccess(true);
     } catch(e) { setError(e instanceof Error?e.message:"Submission failed."); }
     finally {setBusy(false);}
   }
-  if(success) return <div className="form-panel"><h2>Application received</h2><p>Your request has been submitted for review. A staff member will confirm availability and your chosen payment method. No payment has been collected by this website.</p><Link href="/sponsors" className="card-link">Return to sponsorships →</Link></div>;
+  if(success) return <div className="form-panel"><h2>Application received</h2><p>Your request has been saved for staff review. {notificationSent?"An email notification has been sent to the program.":"The email notification could not be sent. Your application was saved in the staff dashboard; contact the program if urgent."} No payment has been collected by this website.</p><Link href="/sponsors" className="card-link">Return to sponsorships →</Link></div>;
   return <>
-    {!enabled&&<div className="notice"><strong>Applications not open yet.</strong><p>This is an interactive preview: you can choose any sponsorship level and payment method, but the Submit button is disabled until the school-approved database and anti-spam verification are configured. No information entered here will be sent.</p></div>}
+    {!enabled&&<div className="notice"><strong>Applications not open yet.</strong><p>This is an interactive preview: you can choose any sponsorship level and payment method, but the Submit button is disabled until the school-approved database, anti-spam verification, and email notifications are configured. No information entered here will be sent.</p></div>}
     <div className="form-panel">
       <h2>2027 Sponsorship Request</h2>
       <p>Submitting this form does not reserve a package or process a payment. Availability will be confirmed by program staff.</p>

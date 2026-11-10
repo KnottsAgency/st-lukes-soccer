@@ -15,7 +15,7 @@ export default async function AdminPage() {
   if (!admin) return <section className="wrap section"><h1>Access restricted</h1><p>Your account has not been approved to view sponsorship records.</p></section>;
 
   const { data, error } = await client.from("sponsorship_submissions")
-    .select("id,created_at,company_name,contact_name,email,phone,package_type,amount_cents,payment_method,player_to_credit,status,paid_at")
+    .select("id,created_at,company_name,contact_name,email,phone,package_type,amount_cents,payment_method,player_to_credit,status,paid_at,notification_status")
     .order("created_at", { ascending: false }).limit(500);
 
   if (error) return <section className="wrap section"><h1>Staff dashboard</h1><p>Unable to load sponsor records. Check the database setup.</p></section>;

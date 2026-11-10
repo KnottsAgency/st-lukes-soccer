@@ -11,7 +11,9 @@ export async function POST(req:NextRequest){
   const url=process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key=process.env.SUPABASE_SERVICE_ROLE_KEY;
   const secret=process.env.TURNSTILE_SECRET_KEY;
-  if(!url||!key||!secret||!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY) return fail("Applications are not available yet.",503);
+  const emailKey=process.env.RESEND_API_KEY;
+  const emailFrom=process.env.SPONSOR_FROM_EMAIL;
+  if(!url||!key||!secret||!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY||!emailKey||!emailFrom) return fail("Applications are not available yet.",503);
 
   const origin=req.headers.get("origin");
   if(!origin||origin!==req.nextUrl.origin) return fail("Invalid request origin.",403);
@@ -51,11 +53,55 @@ export async function POST(req:NextRequest){
   }catch{return fail("Verification is temporarily unavailable.",503);}
 
   const supabase=createClient(url,key,{auth:{autoRefreshToken:false,persistSession:false}});
-  const {error}=await supabase.from("sponsorship_submissions").insert({
+  const {data:saved,error}=await supabase.from("sponsorship_submissions").insert({
     company_name:company,contact_name:contact,email,phone:phone||null,address:address||null,
     package_type:packageType,amount_cents:Math.round(amount*100),payment_method:paymentMethod,
-    player_to_credit:player||null,notes:notes||null,status:"submitted",
-  });
-  if(error){console.error("Sponsor insert failed",error.code);return fail("Unable to save your application. Please try again later.",503);}
-  return NextResponse.json({ok:true},{status:201,headers:{"Cache-Control":"no-store"}});
+    player_to_credit:player||null,notes:notes||null,status:"submitted",notification_status:"pending",
+  }).select("id").single();
+  if(error||!saved){console.error("Sponsor insert failed",error?.code);return fail("Unable to save your application. Please try again later.",503);}
+  const textLines=[
+    "New St. Luke's Soccer Sponsorship Application (2027)",
+    "Application ID: "+saved.id,
+    "Package: "+option.label,
+    "Amount: "+new Intl.NumberFormat("en-US",{style:"currency",currency:"USD"}).format(amount),
+    "Payment preference: "+(paymentMethod==="venmo"?"Venmo (@StLukes-EpiscopalSchool)":"Check (mailed or dropped off at school)"),
+    "Company / supporter: "+company,
+    "Contact name: "+contact,
+    "Email: "+email,
+    "Phone: "+(phone||"Not provided"),
+    "Mailing address: "+(address||"Not provided"),
+    "Player to credit: "+(player||"Not specified"),
+    "Notes: "+(notes||"None"),
+    "",
+    "Payment has not been confirmed. Please review in the staff dashboard."
+  ];
+  let notificationSent=false;
+  try {
+    const response=await fetch("https://api.resend.com/emails",{
+      method:"POST",
+      headers:{
+        "Authorization":"Bearer "+emailKey,
+        "Content-Type":"application/json",
+        "Idempotency-Key":"stlukes-sponsor-"+saved.id
+      },
+      body:JSON.stringify({
+        from:emailFrom,
+        to:["bknotts@slesmobile.org"],
+        reply_to:email,
+        subject:"New St. Luke's Soccer sponsorship: "+option.label,
+        text:textLines.join("\n")
+      }),
+      signal:AbortSignal.timeout(10000),
+      cache:"no-store"
+    });
+    notificationSent=response.ok;
+    if(!notificationSent) console.error("Sponsor email rejected by provider",response.status);
+  }catch{
+    console.error("Sponsor email provider unavailable");
+  }
+  const {error:statusError}=await supabase.from("sponsorship_submissions")
+    .update({notification_status:notificationSent?"sent":"failed"})
+    .eq("id",saved.id);
+  if(statusError) console.error("Sponsor email status update failed",statusError.code);
+  return NextResponse.json({ok:true,notificationSent},{status:201,headers:{"Cache-Control":"no-store"}});
 }
