@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     template: "%s | St. Luke's Soccer",
   },
   description:
-    "Official hub for St. Luke's Boys and Girls Soccer programs, including schedules, announcements, team information, and sponsorship opportunities.",
+    "St. Luke's Soccer — Boys and Girls Soccer Programs, schedules, announcements, team information, and sponsorship opportunities.",
   robots: {
     index: false,
     follow: false,
@@ -38,10 +38,10 @@ export default function RootLayout({
         {/* WEBSITE HEADER */}
         <header className="header">
           <div className="wrap nav">
-            {/* WILDCAT LOGO */}
+            {/* ST. LUKE'S WILDCAT LOGO */}
             <Link href="/" className="brand">
               <Image
-                src="/cat.png1_.jpg"
+                src="/Cat.png1_.jpg"
                 alt="St. Luke's Wildcats Logo"
                 width={65}
                 height={60}
@@ -58,7 +58,7 @@ export default function RootLayout({
               </span>
             </Link>
 
-            {/* MAIN NAVIGATION */}
+            {/* WEBSITE NAVIGATION */}
             <nav
               className="navlinks"
               aria-label="Main Navigation"
@@ -73,7 +73,7 @@ export default function RootLayout({
               ))}
             </nav>
 
-            {/* FAMILY LOGIN */}
+            {/* FAMILY LOGIN BUTTON */}
             <Link
               href="/login"
               className="button button-small"
@@ -83,7 +83,7 @@ export default function RootLayout({
           </div>
         </header>
 
-        {/* WEBSITE CONTENT */}
+        {/* MAIN PAGE CONTENT */}
         <main>{children}</main>
 
         {/* WEBSITE FOOTER */}
@@ -97,8 +97,8 @@ export default function RootLayout({
               }}
             >
               <Image
-                src="/cat.png1_.jpg"
-                alt="St. Luke's Wildcats"
+                src="/Cat.png1_.jpg"
+                alt="St. Luke's Wildcats Logo"
                 width={60}
                 height={55}
                 style={{
@@ -125,8 +125,8 @@ export default function RootLayout({
                 Accountability. Consistency. Development.
               </p>
               <p style={{ fontSize: "12px" }}>
-                Development preview — not yet an
-                official school website.
+                Development preview — not yet an official
+                school website.
               </p>
             </div>
           </div>
