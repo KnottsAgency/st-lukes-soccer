@@ -1,15 +1,137 @@
+
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-export default function Home() { return <>
-  <section className="hero"><div className="wrap hero-inner"><div className="eyebrow">ST. LUKE&apos;S SOCCER PROGRAM</div>
-    <h1>ONE PROGRAM.<br/><span>ONE FAMILY.</span><br/>ONE GOAL.</h1>
-    <p>A place for players, families, alumni, and supporters to stay connected to St. Luke&apos;s boys&apos; and girls&apos; soccer.</p>
-    <div className="actions"><Link href="/login" className="button">Family Portal →</Link><Link href="/sponsors" className="button button-outline">Become a Sponsor →</Link></div>
-  </div></section>
-  <section className="wrap section"><div className="eyebrow red">EXPLORE THE PROGRAM</div><h2>Everything soccer. One place.</h2>
-    <div className="cards"><Link className="card" href="/boys"><span className="card-icon">⚽</span><h3>Boys&apos; Soccer</h3><p>Varsity and JV program information, schedules and updates.</p><span className="card-link">Explore boys&apos; soccer →</span></Link>
-    <Link className="card" href="/girls"><span className="card-icon">⚽</span><h3>Girls&apos; Soccer</h3><p>Varsity and JV program information, schedules and updates.</p><span className="card-link">Explore girls&apos; soccer →</span></Link>
-    <Link className="card" href="/shop"><span className="card-icon">▣</span><h3>Team Shop</h3><p>Find spirit wear, team gear, and ordering information.</p><span className="card-link">Visit the shop →</span></Link></div>
-  </section>
-  <section className="dark-band"><div className="wrap band-content"><div><div className="eyebrow">BUILDING OUR PROGRAM</div><h2>Support St. Luke&apos;s Soccer</h2><p>Partner with our program through business sponsorships and community support.</p></div><Link href="/sponsors" className="button">Explore Sponsorships →</Link></div></section>
-  <section className="wrap section"><div className="eyebrow red">OUR FOUNDATION</div><h2>Be better each day.</h2><div className="pillars"><div><strong>Accountability</strong><p>Own our responsibilities.</p></div><div><strong>Consistency</strong><p>Bring our best every day.</p></div><div><strong>Development</strong><p>Grow as players and people.</p></div></div></section>
-</> }
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: {
+    default: "St. Luke's Soccer",
+    template: "%s | St. Luke's Soccer",
+  },
+  description:
+    "St. Luke's Soccer — Boys and Girls Soccer Programs, schedules, announcements, team information, and sponsorship opportunities.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
+const navigation = [
+  { label: "About", href: "/about" },
+  { label: "Boys", href: "/boys" },
+  { label: "Girls", href: "/girls" },
+  { label: "Schedules", href: "/schedules" },
+  { label: "Shop", href: "/shop" },
+  { label: "Sponsors", href: "/sponsors" },
+  { label: "Contact", href: "/contact" },
+];
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body>
+        {/* WEBSITE HEADER */}
+        <header className="header">
+          <div className="wrap nav">
+            {/* ST. LUKE'S WILDCAT LOGO */}
+            <Link href="/" className="brand">
+              <Image
+                src="/Cat.png1_.jpg"
+                alt="St. Luke's Wildcats Logo"
+                width={65}
+                height={60}
+                style={{
+                  objectFit: "contain",
+                  height: "auto",
+                }}
+                priority
+              />
+
+              <span>
+                ST. LUKE&apos;S
+                <small>SOCCER</small>
+              </span>
+            </Link>
+
+            {/* WEBSITE NAVIGATION */}
+            <nav
+              className="navlinks"
+              aria-label="Main Navigation"
+            >
+              {navigation.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* FAMILY LOGIN BUTTON */}
+            <Link
+              href="/login"
+              className="button button-small"
+            >
+              Family Login
+            </Link>
+          </div>
+        </header>
+
+        {/* MAIN PAGE CONTENT */}
+        <main>{children}</main>
+
+        {/* WEBSITE FOOTER */}
+        <footer className="footer">
+          <div className="wrap footer-inner">
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "15px",
+              }}
+            >
+              <Image
+                src="/Cat.png1_.jpg"
+                alt="St. Luke's Wildcats Logo"
+                width={60}
+                height={55}
+                style={{
+                  objectFit: "contain",
+                  height: "auto",
+                }}
+              />
+
+              <div>
+                <strong>ST. LUKE&apos;S SOCCER</strong>
+                <p
+                  style={{
+                    margin: "4px 0 0",
+                    fontSize: "13px",
+                  }}
+                >
+                  Boys &amp; Girls Soccer Programs
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <p>
+                Accountability. Consistency. Development.
+              </p>
+              <p style={{ fontSize: "12px" }}>
+                Development preview — not yet an official
+                school website.
+              </p>
+            </div>
+          </div>
+        </footer>
+      </body>
+    </html>
+  );
+}
