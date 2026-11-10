@@ -107,8 +107,9 @@ export default function SponsorsPage() {
           <div className="card"><h3>Donation</h3><p style={{ fontSize: 26, fontWeight: 900, color: "#ad1628" }}>Any amount</p><p>Support the program without purchasing a sponsorship package.</p></div>
         </div>
         <div className="notice">
+          <p><Link href="/sponsors/application" className="button">Request a Sponsorship →</Link></p>
           <p><strong>December 20 deadline:</strong> Sponsorship payments and applicable shirt artwork must be received by December 20 to count toward the 2027 player fundraising challenge.</p>
-          <p><strong>Interested in a package?</strong> Reach out using the program contact details to confirm availability and coordinate payment or artwork. Online checkout is not available yet.</p>
+          <p><strong>Interested in a package?</strong> Review the application page or contact program staff. Requests do not reserve placements; online checkout is not available yet.</p>
           <Link href="/contact" className="card-link">Contact the program →</Link>
         </div>
       </section>
