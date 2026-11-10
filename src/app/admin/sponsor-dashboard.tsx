@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/browser";
 
-type RecordItem = { id:string; created_at:string; company_name:string; contact_name:string; email:string; phone:string|null; package_type:string; amount_cents:number; player_to_credit:string|null; status:string; paid_at:string|null };
+type RecordItem = { id:string; created_at:string; company_name:string; contact_name:string; email:string; phone:string|null; package_type:string; amount_cents:number; payment_method:"check"|"venmo"; player_to_credit:string|null; status:string; paid_at:string|null };
 
 const money = (cents:number)=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(cents/100);
 
@@ -46,13 +46,13 @@ export function AdminDashboard({initialRecords}:{initialRecords:RecordItem[]}) {
       </div>
       <h2 style={{marginTop:40}}>Sponsor Records</h2>
       {notice && <p role="alert" className="notice">{notice}</p>}
-      <div className="table-scroll"><table className="sponsor-table"><thead><tr><th>Business</th><th>Package</th><th>Amount</th><th>Player credit</th><th>Contact</th><th>Status</th></tr></thead><tbody>
-      {records.map(x=><tr key={x.id}><td><strong>{x.company_name}</strong><br/><small>{new Date(x.created_at).toLocaleDateString()}</small></td><td>{x.package_type}</td><td>{money(x.amount_cents)}</td><td>{x.player_to_credit||"—"}</td><td>{x.contact_name}<br/><a href={"mailto:"+x.email}>{x.email}</a>{x.phone&&<><br/>{x.phone}</>}</td><td>
+      <div className="table-scroll"><table className="sponsor-table"><thead><tr><th>Business</th><th>Package</th><th>Amount</th><th>Payment method</th><th>Player credit</th><th>Contact</th><th>Status</th></tr></thead><tbody>
+      {records.map(x=><tr key={x.id}><td><strong>{x.company_name}</strong><br/><small>{new Date(x.created_at).toLocaleDateString()}</small></td><td>{x.package_type}</td><td>{money(x.amount_cents)}</td><td>{x.payment_method==="venmo"?"Venmo":"Check"}</td><td>{x.player_to_credit||"—"}</td><td>{x.contact_name}<br/><a href={"mailto:"+x.email}>{x.email}</a>{x.phone&&<><br/>{x.phone}</>}</td><td>
         <select aria-label={"Status for "+x.company_name} disabled={working===x.id} value={x.status} onChange={e=>update(x.id,e.target.value)}>
           <option value="submitted">Submitted</option><option value="contacted">Contacted</option><option value="approved">Approved</option><option value="paid">Paid</option><option value="declined">Declined</option>
         </select>
       </td></tr>)}
-      {!records.length&&<tr><td colSpan={6}>No sponsorship applications received yet.</td></tr>}</tbody></table></div>
+      {!records.length&&<tr><td colSpan={7}>No sponsorship applications received yet.</td></tr>}</tbody></table></div>
       <p style={{color:"#636774",marginTop:18}}>Payment statuses are recorded manually. This dashboard does not process money or confirm payment automatically.</p>
     </section></>;
 }

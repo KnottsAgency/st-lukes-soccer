@@ -21,6 +21,8 @@ export async function POST(req:NextRequest){
   try{input=await req.json();if(!input||typeof input!=="object"||Array.isArray(input))throw Error();}catch{return fail("Invalid application.",400);}
   if(input.website) return fail("Could not process application.",400);
 
+  const paymentMethod=asText(input.payment_method,12);
+  if(paymentMethod!=="check" && paymentMethod!=="venmo") return fail("Choose Check or Venmo for payment.",400);
   const packageType=asText(input.package_type,30);
   const option=sponsorshipOptions.find(x=>x.value===packageType);
   if(!option) return fail("Choose a valid sponsorship.",400);
@@ -51,7 +53,7 @@ export async function POST(req:NextRequest){
   const supabase=createClient(url,key,{auth:{autoRefreshToken:false,persistSession:false}});
   const {error}=await supabase.from("sponsorship_submissions").insert({
     company_name:company,contact_name:contact,email,phone:phone||null,address:address||null,
-    package_type:packageType,amount_cents:Math.round(amount*100),
+    package_type:packageType,amount_cents:Math.round(amount*100),payment_method:paymentMethod,
     player_to_credit:player||null,notes:notes||null,status:"submitted",
   });
   if(error){console.error("Sponsor insert failed",error.code);return fail("Unable to save your application. Please try again later.",503);}

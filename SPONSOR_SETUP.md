@@ -13,3 +13,5 @@
 9. Do not invite player/family accounts until separate approvals and access policies are implemented.
 
 The `/admin` dashboard is behind Supabase authentication and a database-controlled staff whitelist. The API uses mandatory Cloudflare Turnstile verification before inserting via a server-only service role. Public users have no read access to applications. Package limits shown in the dashboard are indicative; staff must confirm actual availability before accepting a sponsorship. The dashboard currently tracks payment status manually (there is no checkout integration or automatic sponsor email). Mark Paid only after confirming receipt through official school channels.
+
+Payment options: Check (mailed or dropped off at the school) or Venmo (@StLukes-EpiscopalSchool). Staff should verify the school's official Venmo recipient and check delivery instructions before directing sponsors to pay. The method chosen on the form is a preference, not proof of payment. If the SQL was previously installed, rerun the revised SQL or execute the new ALTER TABLE statement before enabling applications.

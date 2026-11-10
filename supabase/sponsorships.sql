@@ -13,11 +13,14 @@ create table if not exists public.sponsorship_submissions (
   address text,
   package_type text not null check (package_type in ('presenting','platinum','gold','silver','bronze','fence','supporter','donation')),
   amount_cents integer not null check (amount_cents between 100 and 10000000),
+  payment_method text not null default 'check' check (payment_method in ('check','venmo')),
   player_to_credit text,
   notes text,
   status text not null default 'submitted' check (status in ('submitted','contacted','approved','paid','declined')),
   paid_at timestamptz
 );
+-- Support databases where the table was created before payment methods were added.
+alter table public.sponsorship_submissions add column if not exists payment_method text not null default 'check' check (payment_method in ('check','venmo'));
 create index if not exists sponsorship_submissions_created_idx on public.sponsorship_submissions (created_at desc);
 create index if not exists sponsorship_submissions_status_idx on public.sponsorship_submissions (status);
 alter table public.sponsor_admins enable row level security;
