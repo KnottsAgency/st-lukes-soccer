@@ -24,3 +24,8 @@
 .sponsor-table th,.sponsor-table td{padding:13px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 .sponsor-table th{background:#f6f6f7}.sponsor-table select{min-width:125px;padding:8px}
 @media(max-width:640px){.form-two{grid-template-columns:1fr}}
+
+.payment-choice{border:1px solid #d1d3d9;border-radius:8px;padding:16px 18px;margin:16px 0 2px}
+.payment-choice legend{font-size:14px;font-weight:800;padding:0 8px}
+.payment-choice label{display:flex;align-items:center;gap:10px;margin:10px 0;cursor:pointer;line-height:1.4}
+.stack-form .payment-choice input[type="radio"]{display:inline-block;width:18px;height:18px;min-width:18px;accent-color:var(--red);padding:0;margin:0}
